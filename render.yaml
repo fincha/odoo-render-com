@@ -11,18 +11,18 @@ services:
     envVars:
       - key: ADMIN_PASSWORD
         generateValue: true
-      # Replace these values with your actual database connection details
+      # Database connection details (example - replace with your actual values)
       - key: DB_HOST
-        value: "your-db.postgress.render.com"  # Copy from Render dashboard
+        value: "dpg-clk7vqug1b2c73dh9uu0-a"  # Copy the hostname part only
       - key: DB_PORT
         value: "5432"
       - key: DB_USER
-        value: "your_db_user"  # Copy from Render dashboard
+        value: "postgres"    # Something like 'odoo_user_xt91'
       - key: DB_PASSWORD
         sync: false
-        value: "your_db_password"  # Copy from Render dashboard
+        value: "xyz123..."   # A long string like 'p4ssw0rd123xyz...'
       - key: DB_NAME
-        value: "your_db_name"  # Copy from Render dashboard
+        value: "odoo_db"     # Something like 'odoo_db_12ab'
     ports:
       - port: 8069
     healthCheck:
