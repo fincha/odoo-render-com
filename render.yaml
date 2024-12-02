@@ -3,7 +3,6 @@ services:
     name: odoo
     env: docker
     plan: standard
-    region: ohio
     dockerfilePath: ./Dockerfile
     disk:
       name: odoo-data
@@ -13,39 +12,33 @@ services:
       - key: ADMIN_PASSWORD
         generateValue: true
       - key: DB_HOST
-        fromService:
-          type: postgresql
+        fromDatabase:
           name: odoo-db
           property: host
       - key: DB_PORT
-        fromService:
-          type: postgresql
+        fromDatabase:
           name: odoo-db
           property: port
       - key: DB_USER
-        fromService:
-          type: postgresql
+        fromDatabase:
           name: odoo-db
           property: user
       - key: DB_PASSWORD
-        fromService:
-          type: postgresql
+        fromDatabase:
           name: odoo-db
           property: password
       - key: DB_NAME
-        fromService:
-          type: postgresql
-          name: odoo-db
-          property: database
+        value: postgres
     ports:
       - port: 8069
-        protocol: TCP
     healthCheck:
       path: /web/health
       interval: 300s
       timeout: 10s
+    buildCommand: chmod +x entrypoint.sh
+    startCommand: ./entrypoint.sh odoo --database odoo
 
-  - type: postgresql
-    name: odoo-db
+databases:
+  - name: odoo-db
+    databaseName: postgres
     plan: starter
-    ipAllowList: []

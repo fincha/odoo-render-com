@@ -1,7 +1,11 @@
 #!/bin/bash
 
-echo "Starting Odoo configuration..."
-echo "Database settings: Host=${DB_HOST:-localhost} Port=${DB_PORT:-5432}"
+echo "Checking environment variables..."
+echo "DB_HOST=${DB_HOST:-not set}"
+echo "DB_PORT=${DB_PORT:-not set}"
+echo "DB_USER=${DB_USER:-not set}"
+echo "DB_NAME=${DB_NAME:-not set}"
+echo "DB_PASSWORD length: ${#DB_PASSWORD}"
 
 # Generate Odoo configuration
 cat << EOF > /etc/odoo/odoo.conf
@@ -9,43 +13,40 @@ cat << EOF > /etc/odoo/odoo.conf
 addons_path = ${ADDONS_PATH:-/mnt/extra-addons}
 data_dir = ${DATA_DIR:-/var/lib/odoo}
 admin_passwd = ${ADMIN_PASSWORD:-admin}
-db_host = ${DB_HOST:-localhost}
-db_port = ${DB_PORT:-5432}
-db_user = ${DB_USER:-odoo}
-db_password = ${DB_PASSWORD:-odoo}
-db_name = ${DB_NAME:-postgres}
+db_host = ${DB_HOST}
+db_port = ${DB_PORT}
+db_user = ${DB_USER}
+db_password = ${DB_PASSWORD}
+db_name = ${DB_NAME}
 db_template = template1
 db_maxconn = 64
 http_port = 8069
 EOF
 
-echo "Configuration file created"
-cat /etc/odoo/odoo.conf | grep -v password
+echo "Configuration generated at /etc/odoo/odoo.conf"
 
-# Wait for Postgres to be ready
-echo "Waiting for PostgreSQL..."
 if [ -z "${DB_HOST}" ] || [ -z "${DB_PORT}" ] || [ -z "${DB_USER}" ] || [ -z "${DB_PASSWORD}" ]; then
-    echo "Error: Database connection variables are not set properly"
-    echo "DB_HOST: ${DB_HOST:-not set}"
-    echo "DB_PORT: ${DB_PORT:-not set}"
-    echo "DB_USER: ${DB_USER:-not set}"
-    echo "DB_PASSWORD: ${DB_PASSWORD:-length: ${#DB_PASSWORD}}"
+    echo "Error: Required environment variables are missing"
+    env | grep -v PASSWORD
     exit 1
 fi
 
-max_tries=30
-count=0
-until PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d postgres -c '\q' 2>/dev/null; do
-    echo "Postgres is unavailable - sleeping (attempt ${count}/${max_tries})"
-    count=$((count+1))
-    if [ $count -ge $max_tries ]; then
-        echo "Error: Maximum retry attempts reached"
+echo "Testing database connection..."
+export PGPASSWORD="${DB_PASSWORD}"
+max_retries=30
+counter=0
+
+while ! pg_isready -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}"; do
+    counter=$((counter + 1))
+    if [ ${counter} -gt ${max_retries} ]; then
+        echo "Failed to connect to database after ${max_retries} attempts."
         exit 1
     fi
-    sleep 5
+    echo "Waiting for database... (${counter}/${max_retries})"
+    sleep 2
 done
 
-echo "PostgreSQL is ready"
-echo "Starting Odoo on port 8069"
+echo "Database connection successful"
+echo "Starting Odoo..."
 
 exec "$@"
