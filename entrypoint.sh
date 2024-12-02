@@ -1,5 +1,5 @@
-# entrypoint.sh
 #!/bin/bash
+set -e
 
 echo "Checking environment variables..."
 echo "DB_HOST=${DB_HOST}"
@@ -23,24 +23,6 @@ http_port = 8069
 without_demo = all
 EOF
 
-echo "Configuration generated at /etc/odoo/odoo.conf"
+echo "Starting Odoo with database ${DB_NAME}"
 
-echo "Testing database connection..."
-export PGPASSWORD="${DB_PASSWORD}"
-until pg_isready -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}"; do
-    echo "Waiting for database..."
-    sleep 2
-done
-
-echo "Database connection successful"
-echo "Starting Odoo..."
-
-# Start Odoo with proper parameters
-exec odoo --init base \
-    --database "${DB_NAME}" \
-    --db_host "${DB_HOST}" \
-    --db_port "${DB_PORT}" \
-    --db_user "${DB_USER}" \
-    --db_password "${DB_PASSWORD}" \
-    --http-port 8069 \
-    --without-demo=all
+exec odoo "$@"
