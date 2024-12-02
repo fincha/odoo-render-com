@@ -13,25 +13,39 @@ services:
       - key: ADMIN_PASSWORD
         generateValue: true
       - key: DB_HOST
-        sync: false
-        value: "dpg-xxxx-xxxx.region.postgres.render.com"  # Your database host
+        fromService:
+          type: postgresql
+          name: odoo-db
+          property: host
       - key: DB_PORT
-        value: "5432"
+        fromService:
+          type: postgresql
+          name: odoo-db
+          property: port
       - key: DB_USER
-        sync: false
-        value: "odoo_user"
+        fromService:
+          type: postgresql
+          name: odoo-db
+          property: user
       - key: DB_PASSWORD
-        sync: false
-        value: "xxx"
+        fromService:
+          type: postgresql
+          name: odoo-db
+          property: password
       - key: DB_NAME
-        value: "odoo"
-      - key: PORT
-        value: "8069"
+        fromService:
+          type: postgresql
+          name: odoo-db
+          property: database
     ports:
-      - port: 8069        # Added explicit port
-        protocol: TCP     # Specify protocol
+      - port: 8069
+        protocol: TCP
     healthCheck:
       path: /web/health
       interval: 300s
       timeout: 10s
-    startCommand: odoo --http-port=8069 --database odoo --db_host $DB
+
+  - type: postgresql
+    name: odoo-db
+    plan: starter
+    ipAllowList: []
