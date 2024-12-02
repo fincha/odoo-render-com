@@ -23,6 +23,9 @@ RUN mkdir -p /var/lib/odoo \
 # Install psql for health checks
 RUN apt-get update && apt-get install -y postgresql-client
 
+# Expose the port
+EXPOSE 8069
+
 USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]

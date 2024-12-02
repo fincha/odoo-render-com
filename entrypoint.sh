@@ -16,6 +16,7 @@ db_password = ${DB_PASSWORD}
 db_name = ${DB_NAME}
 db_template = template1
 db_maxconn = 64
+http_port = 8069
 EOF
 
 echo "Configuration file created"
@@ -29,5 +30,6 @@ until PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d postgres -c '\q'; 
 done
 
 echo "PostgreSQL is ready"
+echo "Starting Odoo on port 8069"
 
 exec "$@"
