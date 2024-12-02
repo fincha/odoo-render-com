@@ -11,23 +11,18 @@ services:
     envVars:
       - key: ADMIN_PASSWORD
         generateValue: true
-      # Database connection values - you'll need to replace these with your actual values
+      # Replace these values with your actual database connection details
       - key: DB_HOST
-        value: "dpg-your-db-host.region.postgres.render.com"
+        value: "your-db.postgress.render.com"  # Copy from Render dashboard
       - key: DB_PORT
         value: "5432"
       - key: DB_USER
-        value: "odoo_user"
+        value: "your_db_user"  # Copy from Render dashboard
       - key: DB_PASSWORD
-        sync: false  # Prevents the value from appearing in logs
-        value: "your-db-password"
+        sync: false
+        value: "your_db_password"  # Copy from Render dashboard
       - key: DB_NAME
-        value: "postgres"
-      # Additional configuration
-      - key: ADDONS_PATH
-        value: "/mnt/extra-addons"
-      - key: DATA_DIR
-        value: "/var/lib/odoo"
+        value: "your_db_name"  # Copy from Render dashboard
     ports:
       - port: 8069
     healthCheck:
