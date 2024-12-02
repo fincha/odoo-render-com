@@ -15,4 +15,4 @@ RUN chmod +x /entrypoint.sh
 USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["odoo"]
+CMD ["odoo", "--database", "odoo", "-i", "base"]

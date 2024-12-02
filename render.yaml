@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: odoo
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: DB_USER
+        value: odoo
+      - key: DB_PASSWORD
+        generateValue: true
+      - key: DB_HOST
+        value: dpg-xxx  # You'll get this from Render PostgreSQL instance
+      - key: DB_PORT
+        value: "5432"   # Make sure this is a string
+      - key: DB_NAME
+        value: odoo
+    disk:
+      name: odoo-data
+      mountPath: /var/lib/odoo
+      sizeGB: 10
+
+databases:
+  - name: odoo-db
+    databaseName: odoo
+    plan: standard
