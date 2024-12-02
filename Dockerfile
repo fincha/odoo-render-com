@@ -8,7 +8,11 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Create Odoo config directory
-COPY ./config/odoo.conf /etc/odoo/odoo.conf
+# Create configuration script
+COPY ./entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
 USER odoo
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["odoo"]
