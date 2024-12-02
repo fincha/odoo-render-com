@@ -11,21 +11,15 @@ services:
     envVars:
       - key: ADMIN_PASSWORD
         generateValue: true
-      # Database connection details (example - replace with your actual values)
       - key: DB_HOST
-        value: "dpg-clk7vqug1b2c73dh9uu0-a"  # Copy the hostname part only
+        sync: false
       - key: DB_PORT
-        value: "5432"
+        sync: false
       - key: DB_USER
-        value: "postgres"    # Something like 'odoo_user_xt91'
+        sync: false
       - key: DB_PASSWORD
         sync: false
-        value: "xyz123..."   # A long string like 'p4ssw0rd123xyz...'
       - key: DB_NAME
-        value: "odoo_db"     # Something like 'odoo_db_12ab'
+        sync: false
     ports:
       - port: 8069
-    healthCheck:
-      path: /web/health
-      interval: 300s
-      timeout: 10s
