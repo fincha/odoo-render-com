@@ -12,14 +12,30 @@ services:
       - key: ADMIN_PASSWORD
         generateValue: true
       - key: DB_HOST
-        sync: false
+        fromDatabase:
+          name: odoo-db
+          property: host
       - key: DB_PORT
-        sync: false
+        fromDatabase:
+          name: odoo-db
+          property: port
       - key: DB_USER
-        sync: false
+        fromDatabase:
+          name: odoo-db
+          property: user
       - key: DB_PASSWORD
-        sync: false
+        fromDatabase:
+          name: odoo-db
+          property: password
       - key: DB_NAME
-        sync: false
+        fromDatabase:
+          name: odoo-db
+          property: database
     ports:
       - port: 8069
+
+databases:
+  - name: odoo-db
+    databaseName: odoo
+    user: odoo_user
+    plan: starter
