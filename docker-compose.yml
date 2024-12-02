@@ -5,13 +5,13 @@ services:
   db:
     image: postgres:15
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=odoo_pw
-      - POSTGRES_USER=odoo
+      - POSTGRES_DB=${DB_NAME:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-odoo_pw}
+      - POSTGRES_USER=${DB_USER:-odoo}
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-odoo}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,16 +22,19 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8069:8069"
+      - "${PORT:-8069}:8069"
     environment:
-      - HOST=db
-      - PORT=5432
-      - USER=odoo
-      - PASSWORD=odoo_pw
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-odoo}
+      - DB_PASSWORD=${DB_PASSWORD:-odoo_pw}
+      - DB_NAME=${DB_NAME:-postgres}
+      - ADDONS_PATH=${ADDONS_PATH:-/mnt/extra-addons}
+      - DATA_DIR=${DATA_DIR:-/var/lib/odoo}
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
-      - ./config:/etc/odoo
     restart: unless-stopped
 
 volumes:
