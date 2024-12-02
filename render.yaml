@@ -3,6 +3,7 @@ services:
     name: odoo
     env: docker
     plan: standard
+    region: ohio  # or your preferred region
     dockerfilePath: ./Dockerfile
     disk:
       name: odoo-data
@@ -12,27 +13,29 @@ services:
       - key: ADMIN_PASSWORD
         generateValue: true
       - key: DB_HOST
-        fromDatabase:
-          name: odoo-db
-          property: host
+        sync: false
+        value: "dpg-xxxx-xxxx.region.postgres.render.com"  # You'll get this from Render
       - key: DB_PORT
-        fromDatabase:
-          name: odoo-db
-          property: port
+        value: "5432"
       - key: DB_USER
-        fromDatabase:
-          name: odoo-db
-          property: user
+        sync: false
+        value: "odoo_user"  # Your database user
       - key: DB_PASSWORD
-        fromDatabase:
-          name: odoo-db
-          property: password
+        sync: false
+        value: "xxx"  # Your database password
       - key: DB_NAME
-        fromDatabase:
-          name: odoo-db
-          property: database
+        value: "odoo"
+      - key: CREATE_DB
+        value: "true"
+    healthCheck:
+      path: /web/health
+      interval: 300s
+      timeout: 10s
+    startCommand: odoo --database odoo --db_host $DB_HOST --db_port $DB_PORT --db_user $DB_USER --db_password $DB_PASSWORD
 
 databases:
   - name: odoo-db
+    plan: starter
     databaseName: odoo
-    plan: standard
+    user: odoo_user
+    ipAllowList: [] # only allow internal connections

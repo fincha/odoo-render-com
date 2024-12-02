@@ -15,10 +15,14 @@ RUN chmod +x /entrypoint.sh
 # Create necessary directories
 RUN mkdir -p /var/lib/odoo \
     && mkdir -p /mnt/extra-addons \
+    && mkdir -p /etc/odoo \
     && chown -R odoo:odoo /var/lib/odoo \
-    && chown -R odoo:odoo /mnt/extra-addons
+    && chown -R odoo:odoo /mnt/extra-addons \
+    && chown -R odoo:odoo /etc/odoo
+
+# Install psql for health checks
+RUN apt-get update && apt-get install -y postgresql-client
 
 USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["odoo", "--database", "odoo", "-i", "base"]
