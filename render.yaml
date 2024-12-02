@@ -1,4 +1,3 @@
-# render.yaml
 services:
   - type: web
     name: odoo
@@ -34,10 +33,9 @@ services:
           property: database
     ports:
       - port: 8069
-    startCommand: /entrypoint.sh
 
 databases:
   - name: odoo-db
     databaseName: odoo
     user: odoo_user
-    plan: starter
+    ipAllowList: []

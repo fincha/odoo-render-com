@@ -25,4 +25,15 @@ EOF
 
 echo "Starting Odoo with database ${DB_NAME}"
 
-exec odoo "$@"
+# Check if database needs initialization
+INIT_FLAG=""
+PGPASSWORD=${DB_PASSWORD} psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -c "SELECT 1 FROM ir_module_module LIMIT 1" &>/dev/null || INIT_FLAG="-i base"
+
+if [ ! -z "$INIT_FLAG" ]; then
+    echo "Initializing database with base module..."
+    exec odoo ${INIT_FLAG} --stop-after-init
+    echo "Base module initialized"
+fi
+
+echo "Starting Odoo server..."
+exec odoo
