@@ -11,34 +11,26 @@ services:
     envVars:
       - key: ADMIN_PASSWORD
         generateValue: true
+      # Database connection values - you'll need to replace these with your actual values
       - key: DB_HOST
-        fromDatabase:
-          name: odoo-db
-          property: host
+        value: "dpg-your-db-host.region.postgres.render.com"
       - key: DB_PORT
-        fromDatabase:
-          name: odoo-db
-          property: port
+        value: "5432"
       - key: DB_USER
-        fromDatabase:
-          name: odoo-db
-          property: user
+        value: "odoo_user"
       - key: DB_PASSWORD
-        fromDatabase:
-          name: odoo-db
-          property: password
+        sync: false  # Prevents the value from appearing in logs
+        value: "your-db-password"
       - key: DB_NAME
-        value: postgres
+        value: "postgres"
+      # Additional configuration
+      - key: ADDONS_PATH
+        value: "/mnt/extra-addons"
+      - key: DATA_DIR
+        value: "/var/lib/odoo"
     ports:
       - port: 8069
     healthCheck:
       path: /web/health
       interval: 300s
       timeout: 10s
-    buildCommand: chmod +x entrypoint.sh
-    startCommand: ./entrypoint.sh odoo --database odoo
-
-databases:
-  - name: odoo-db
-    databaseName: postgres
-    plan: starter
