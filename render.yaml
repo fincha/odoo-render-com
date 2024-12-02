@@ -2,24 +2,35 @@ services:
   - type: web
     name: odoo
     env: docker
+    plan: standard
     dockerfilePath: ./Dockerfile
-    envVars:
-      - key: ADMIN_PASSWORD
-        generateValue: true
-      - key: DB_USER
-        value: odoo
-      - key: DB_PASSWORD
-        generateValue: true
-      - key: DB_HOST
-        value: dpg-xxx  # You'll get this from Render PostgreSQL instance
-      - key: DB_PORT
-        value: "5432"   # Make sure this is a string
-      - key: DB_NAME
-        value: odoo
     disk:
       name: odoo-data
       mountPath: /var/lib/odoo
       sizeGB: 10
+    envVars:
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: DB_HOST
+        fromDatabase:
+          name: odoo-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: odoo-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: odoo-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: odoo-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: odoo-db
+          property: database
 
 databases:
   - name: odoo-db
