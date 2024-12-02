@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD:-odoo_pw}
       - POSTGRES_USER=${DB_USER:-odoo}
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data
+      - ./postgresql:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-odoo}"]
       interval: 10s
@@ -31,10 +31,11 @@ services:
       - ADDONS_PATH=${ADDONS_PATH:-/mnt/extra-addons}
       - DATA_DIR=${DATA_DIR:-/var/lib/odoo}
     volumes:
-      - odoo-web-data:/var/lib/odoo
+      - ./odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
-    command: ["odoo", "--database", "odoo", "-i", "base"]   # Added -i base flag to initialize
-
-volumes:
-  odoo-db-data:
-  odoo-web-data:
+      - ./config:/etc/odoo/
+      - ./logs:/var/log/odoo
+      - ./backups:/var/backups/odoo
+      - ./custom-addons:/mnt/extra-addons/custom
+      - ./filestore:/var/lib/odoo/filestore
+    command: ["odoo", "--database", "odoo", "-i", "base"]

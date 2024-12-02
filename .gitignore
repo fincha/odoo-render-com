@@ -1,1 +1,24 @@
+# Data directories
+postgresql/*
+!postgresql/.gitkeep
+odoo-web-data/*
+!odoo-web-data/.gitkeep
+filestore/*
+!filestore/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# Backups
+backups/*
+!backups/.gitkeep
+
+# Configuration
+config/*
+!config/.gitkeep
+
+# Keep empty directories
+!.gitkeep
+
 .env
