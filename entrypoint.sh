@@ -1,3 +1,4 @@
+# entrypoint.sh
 #!/bin/bash
 
 echo "Checking environment variables..."
@@ -34,10 +35,12 @@ done
 echo "Database connection successful"
 echo "Starting Odoo..."
 
-# Check if database exists
-if ! psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -lqt | cut -d \| -f 1 | grep -qw "${DB_NAME}"; then
-    echo "Database does not exist, initializing..."
-    createdb -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}"
-fi
-
-exec "$@"
+# Start Odoo with proper parameters
+exec odoo --init base \
+    --database "${DB_NAME}" \
+    --db_host "${DB_HOST}" \
+    --db_port "${DB_PORT}" \
+    --db_user "${DB_USER}" \
+    --db_password "${DB_PASSWORD}" \
+    --http-port 8069 \
+    --without-demo=all
