@@ -33,7 +33,7 @@ services:
           property: database
     ports:
       - port: 8069
-    startCommand: odoo --database ${DB_NAME} --db_host ${DB_HOST} --db_port ${DB_PORT} --db_user ${DB_USER} --db_password ${DB_PASSWORD} --http-port 8069
+    startCommand: odoo --init base --database ${DB_NAME} --db_host ${DB_HOST} --db_port ${DB_PORT} --db_user ${DB_USER} --db_password ${DB_PASSWORD} --http-port 8069 --without-demo=all
 
 databases:
   - name: odoo-db

@@ -19,6 +19,7 @@ db_user = ${DB_USER}
 db_password = ${DB_PASSWORD}
 db_name = ${DB_NAME}
 http_port = 8069
+without_demo = all
 EOF
 
 echo "Configuration generated at /etc/odoo/odoo.conf"
@@ -33,5 +34,10 @@ done
 echo "Database connection successful"
 echo "Starting Odoo..."
 
-# Execute with proper foreground flag
-exec "$@" --logfile /dev/stdout --no-database-list
+# Check if database exists
+if ! psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -lqt | cut -d \| -f 1 | grep -qw "${DB_NAME}"; then
+    echo "Database does not exist, initializing..."
+    createdb -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}"
+fi
+
+exec "$@"
